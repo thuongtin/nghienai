@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng dẫn chuyển nhượng nghien.ai</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #faf9f7;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-dim: #6b6560;
+      --text-light: #9a9490;
+      --accent: #c47a2a;
+      --accent-bg: #fdf6ee;
+      --buyer: #1a6b4a;
+      --buyer-bg: #eef7f2;
+      --buyer-border: #c8e6d5;
+      --seller: #4a3a8a;
+      --seller-bg: #f0eef7;
+      --seller-border: #d1cce6;
+      --border: #e8e4df;
+      --font: 'Be Vietnam Pro', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      background: #0a0a0f;
+      color: #f5f0ea;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .header-domain {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .header-domain .tld { color: #e8b06a; }
+
+    .header-title {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #8a8279;
+    }
+
+    /* Sticky nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      background: rgba(250, 249, 247, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.5rem;
+      z-index: 50;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      justify-content: center;
+    }
+
+    .nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-dim);
+      padding: 0.35rem 0.8rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav a:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Cost banner */
+    .cost-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--buyer-bg);
+      border: 1px solid var(--buyer-border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .cost-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .cost-text { font-size: 0.9rem; }
+    .cost-text strong { color: var(--buyer); }
+
+    /* Infographic flow */
+    .infographic {
+      margin: 2rem 0 2.5rem;
+    }
+
+    .info-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      position: relative;
+    }
+
+    .flow-card {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 1rem;
+      padding: 1rem 0;
+      position: relative;
+    }
+
+    .flow-card:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      bottom: 0;
+      top: calc(100% - 0.5rem);
+      width: 2px;
+      height: calc(0.5rem + 1rem);
+      background: var(--border);
+    }
+
+    .flow-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .flow-badge.buyer { background: var(--buyer-bg); border: 1.5px solid var(--buyer-border); }
+    .flow-badge.seller { background: var(--seller-bg); border: 1.5px solid var(--seller-border); }
+    .flow-badge.both { background: var(--accent-bg); border: 1.5px solid rgba(196, 122, 42, 0.25); }
+    .flow-badge.done { background: var(--buyer); border-color: var(--buyer); }
+
+    .flow-body { padding-top: 0.2rem; }
+
+    .flow-who {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+
+    .flow-who.buyer { color: var(--buyer); }
+    .flow-who.seller { color: var(--seller); }
+    .flow-who.both { color: var(--accent); }
+
+    .flow-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .flow-desc {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Section */
+    .section { margin-top: 2.5rem; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .section-icon.buyer { background: var(--buyer-bg); }
+    .section-icon.seller { background: var(--seller-bg); }
+    .section-icon.info { background: var(--accent-bg); }
+
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* Step cards */
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .step-num {
+      position: absolute;
+      top: -0.6rem;
+      left: 1.2rem;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .step-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step ol, .step ul {
+      padding-left: 1.3rem;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+
+    .step li { margin-bottom: 0.3rem; }
+
+    .step p {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: #f0eeeb;
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      font-size: 0.82em;
+    }
+
+    /* Callout */
+    .callout {
+      background: var(--accent-bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 0.9rem 1.1rem;
+      margin: 0.8rem 0;
+      font-size: 0.85rem;
+    }
+
+    .callout strong { color: var(--accent); }
+
+    .callout.warn {
+      background: #fef3f2;
+      border-left-color: #d44;
+    }
+
+    .callout.warn strong { color: #d44; }
+
+    /* Info table */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 0.8rem 0;
+    }
+
+    .info-table th {
+      text-align: left;
+      font-weight: 600;
+      padding: 0.5rem 0.6rem;
+      border-bottom: 2px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .info-table td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-table tr:last-child td { border-bottom: none; }
+
+    /* Cost breakdown */
+    .cost-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .cost-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .cost-card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+    .cost-card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      margin-bottom: 0.3rem;
+    }
+
+    .cost-card-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .cost-card-value.free { color: var(--buyer); }
+    .cost-card-value.paid { color: var(--text); }
+
+    .cost-card-note {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-top: 0.2rem;
+    }
+
+    /* Checklist */
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .check-col {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+    }
+
+    .check-col-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .check-col-head span:first-child { font-size: 1.1rem; }
+
+    .check-col-head span:last-child {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .check-col ul {
+      list-style: none;
+    }
+
+    .check-col li {
+      position: relative;
+      padding-left: 1.6rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .check-col li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.3em;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .faq-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+    }
+
+    .faq-q {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .faq-a {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .doc-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.7rem;
+      color: var(--text-light);
+      border-top: 1px solid var(--border);
+    }
+
+    a { color: var(--accent); }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 2.5rem 0;
+    }
+
+    strong { font-weight: 600; }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 1.5rem 1rem 3rem; }
+      .cost-grid, .check-grid, .faq-grid { grid-template-columns: 1fr; }
+      .flow-card { grid-template-columns: 44px 1fr; }
+      .flow-badge { width: 44px; height: 44px; font-size: 1.2rem; border-radius: 12px; }
+      .flow-card:not(:last-child)::after { left: 22px; }
+      .header { padding: 2rem 1rem; }
+      .header-domain { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-domain">nghien<span class="tld">.ai</span></div>
+    <div class="header-title">Hướng dẫn chuyển nhượng domain</div>
+  </div>
+
+  <nav class="nav">
+    <a href="#flow">Quy trình</a>
+    <a href="#cost">Chi phí</a>
+    <a href="#buyer">Bên Mua</a>
+    <a href="#seller">Bên Bán</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <main class="wrap">
+
+    <!-- COST BANNER -->
+    <div class="cost-banner">
+      <div class="cost-icon">&#9989;</div>
+      <div class="cost-text">
+        Push domain nội bộ Spaceship <strong>hoàn toàn miễn phí</strong> — không tốn phí transfer, không tốn phí gia hạn thêm.
+      </div>
+    </div>
+
+    <!-- INFOGRAPHIC FLOW -->
+    <section class="infographic" id="flow">
+      <div class="info-title">Quy trình chuyển nhượng</div>
+
+      <div class="flow-grid">
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#128100;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Tạo tài khoản Spaceship</div>
+            <div class="flow-desc">Đăng ký tại spaceship.com dưới danh nghĩa công ty</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#128203;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Thiết lập Domain Contact</div>
+            <div class="flow-desc">Bắt buộc — điền thông tin liên hệ trong Account Settings trước khi nhận domain</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#128231;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Gửi email tài khoản cho Bên Bán</div>
+            <div class="flow-desc">Chỉ cần gửi email đã đăng ký Spaceship</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge both">&#129309;</div>
+          <div class="flow-body">
+            <div class="flow-who both">Hai bên</div>
+            <div class="flow-label">Thống nhất giá &amp; thanh toán</div>
+            <div class="flow-desc">Chuyển khoản, tiền mặt, hoặc phương thức hai bên đồng ý</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge seller">&#128640;</div>
+          <div class="flow-body">
+            <div class="flow-who seller">Bên Bán</div>
+            <div class="flow-label">Push domain sang tài khoản Bên Mua</div>
+            <div class="flow-desc">Domain List &rarr; nghien.ai &rarr; Transfer &rarr; nhập email bên mua</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#9989;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Xác nhận chấp nhận domain</div>
+            <div class="flow-desc">Nhận email thông báo từ Spaceship &rarr; xác nhận trên dashboard</div>
+          </div>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-badge done">&#10003;</div>
+          <div class="flow-body">
+            <div class="flow-who" style="color: var(--buyer)">Hoàn tất</div>
+            <div class="flow-label">Domain thuộc về Bên Mua</div>
+            <div class="flow-desc">Kiểm tra trong Domain List — bật Auto-Renew để bảo vệ domain</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- COST -->
+    <section class="section" id="cost">
+      <div class="section-head">
+        <div class="section-icon info">&#128176;</div>
+        <div>
+          <div class="section-label">Chi phí</div>
+          <div class="section-title">Bảng chi phí chi tiết</div>
+        </div>
+      </div>
+
+      <div class="cost-grid">
+        <div class="cost-card">
+          <div class="cost-card-icon">&#128260;</div>
+          <div class="cost-card-label">Phí chuyển nhượng</div>
+          <div class="cost-card-value free">$0</div>
+          <div class="cost-card-note">Push nội bộ Spaceship miễn phí</div>
+        </div>
+        <div class="cost-card">
+          <div class="cost-card-icon">&#128197;</div>
+          <div class="cost-card-label">Gia hạn hàng năm</div>
+          <div class="cost-card-value paid">~$80–140</div>
+          <div class="cost-card-note">USD/năm &middot; tối thiểu 2 năm/lần</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Tóm lại:</strong> Bên Mua chỉ trả tiền mua domain cho Bên Bán. Không phát sinh thêm phí transfer. Chi phí gia hạn (~$80–140 USD/năm, tương đương ~2–3.5 triệu VNĐ/năm) thanh toán sau theo chu kỳ.
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- BUYER -->
+    <section class="section" id="buyer">
+      <div class="section-head">
+        <div class="section-icon buyer">&#128100;</div>
+        <div>
+          <div class="section-label">Phần 1</div>
+          <div class="section-title">Bên Mua cần làm gì</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 1</div>
+        <div class="step-title">Chuẩn bị thông tin công ty</div>
+        <table class="info-table">
+          <thead><tr><th>Thông tin</th><th>Ví dụ</th><th>Ghi chú</th></tr></thead>
+          <tbody>
+            <tr><td>Tên công ty</td><td>Công ty TNHH ABC</td><td>Đúng theo giấy ĐKKD</td></tr>
+            <tr><td>Địa chỉ trụ sở</td><td>123 Nguyễn Huệ, Q.1, TP.HCM</td><td>Địa chỉ trên ĐKKD</td></tr>
+            <tr><td>Số điện thoại</td><td>+84 28 1234 5678</td><td>Có mã quốc tế +84</td></tr>
+            <tr><td>Email công ty</td><td>info@abc.com.vn</td><td>Dùng để đăng ký</td></tr>
+            <tr><td>Người đại diện</td><td>Nguyễn Văn A</td><td>Quản lý domain</td></tr>
+            <tr><td>SĐT đại diện</td><td>+84 90 123 4567</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 2</div>
+        <div class="step-title">Tạo tài khoản Spaceship</div>
+        <ol>
+          <li>Truy cập <a href="https://www.spaceship.com/auth/signUp/" target="_blank" rel="noopener">spaceship.com/auth/signUp</a></li>
+          <li>Điền <strong>email công ty</strong> và đặt mật khẩu mạnh</li>
+          <li>Nhấn <code>Sign Up</code></li>
+          <li>Vào email &rarr; nhấn link xác minh từ Spaceship</li>
+          <li>Đăng nhập vào tài khoản</li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 3</div>
+        <div class="step-title">Cập nhật thông tin công ty</div>
+        <ol>
+          <li>Vào <code>Account Settings</code> (góc phải trên cùng)</li>
+          <li>Tìm phần <code>Profile</code> hoặc <code>Contact Information</code></li>
+          <li>Điền: <strong>Organization</strong> (tên công ty), <strong>Name</strong> (người đại diện), <strong>Address</strong>, <strong>City</strong>, <strong>Country</strong> (Vietnam), <strong>Phone</strong> (+84...)</li>
+          <li>Nhấn <code>Save</code></li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 4</div>
+        <div class="step-title">Thiết lập Domain Contact</div>
+        <div class="callout warn">
+          <strong>Bắt buộc!</strong> Nếu bỏ qua bước này, Bên Bán sẽ không thể push domain sang cho bạn.
+        </div>
+        <ol>
+          <li>Vào <code>Account Settings</code> &rarr; <code>Domain Contacts</code></li>
+          <li>Nhấn <code>Add Contact</code> hoặc <code>Create Contact</code></li>
+          <li>Điền thông tin: tên người đại diện, tên công ty, địa chỉ, SĐT, email</li>
+          <li>Nhấn <code>Save</code></li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 5</div>
+        <div class="step-title">Gửi email tài khoản cho Bên Bán</div>
+        <p>Gửi cho Bên Bán <strong>email bạn đã dùng để đăng ký Spaceship</strong>. Chỉ cần vậy thôi.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 6</div>
+        <div class="step-title">Xác nhận chấp nhận domain</div>
+        <p>Sau khi Bên Bán push domain:</p>
+        <ol>
+          <li>Bạn nhận <strong>email thông báo</strong> từ Spaceship</li>
+          <li>Đăng nhập <a href="https://www.spaceship.com" target="_blank" rel="noopener">spaceship.com</a></li>
+          <li><strong>Chấp nhận transfer</strong> qua link trong email hoặc trên dashboard</li>
+          <li>Vào <code>Domain List</code> &rarr; kiểm tra <strong>nghien.ai</strong> đã xuất hiện</li>
+        </ol>
+        <div class="callout">
+          <strong>Lưu ý:</strong> Xác nhận sớm. Nếu không xác nhận trong thời gian quy định, transfer có thể bị hủy.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 7</div>
+        <div class="step-title">Sau khi nhận domain</div>
+        <ul>
+          <li><strong>Bật Auto-Renew</strong> để domain tự gia hạn, tránh mất</li>
+          <li><strong>Bật Domain Privacy</strong> (miễn phí) để ẩn thông tin WHOIS</li>
+          <li>Đổi nameserver nếu cần trỏ về hosting/website của bạn</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- SELLER -->
+    <section class="section" id="seller">
+      <div class="section-head">
+        <div class="section-icon seller">&#128640;</div>
+        <div>
+          <div class="section-label">Phần 2</div>
+          <div class="section-title">Bên Bán cần làm gì</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 1</div>
+        <div class="step-title">Nhận email tài khoản từ Bên Mua</div>
+        <p>Yêu cầu Bên Mua gửi <strong>email đã đăng ký tài khoản Spaceship</strong>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 2</div>
+        <div class="step-title">Xác nhận đã nhận đủ thanh toán</div>
+        <div class="callout warn">
+          <strong>Quan trọng:</strong> KHÔNG push domain trước khi nhận đủ tiền.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 3</div>
+        <div class="step-title">Push domain sang tài khoản Bên Mua</div>
+        <ol>
+          <li>Đăng nhập <a href="https://www.spaceship.com" target="_blank" rel="noopener">spaceship.com</a></li>
+          <li>Vào <code>Domain List</code> (KHÔNG phải Domain Portfolio)</li>
+          <li>Nhấn vào tên <strong>nghien.ai</strong> (nhấn vào tên, không tick checkbox)</li>
+          <li>Menu bên trái &rarr; chọn <code>Transfer</code></li>
+          <li>Chọn <code>Transfer to another Spaceship account</code></li>
+          <li>Nhập <strong>email Spaceship</strong> của Bên Mua</li>
+          <li>Xác nhận chuyển</li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 4</div>
+        <div class="step-title">Xác nhận hoàn tất</div>
+        <ul>
+          <li>Cả hai bên nhận <strong>email xác nhận</strong> từ Spaceship</li>
+          <li>Domain biến mất khỏi tài khoản Bên Bán</li>
+          <li>Kiểm tra Domain List để chắc chắn đã chuyển xong</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 5</div>
+        <div class="step-title">Xử lý Cloudflare (nếu cần)</div>
+        <p><strong>Bên Mua muốn dùng Cloudflare:</strong> Tạo tài khoản mới, thêm domain, đổi nameserver.</p>
+        <p><strong>Không cần Cloudflare:</strong> Đổi nameserver về <code>launch1.spaceship.net</code> và <code>launch2.spaceship.net</code></p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CHECKLIST -->
+    <section class="section" id="checklist">
+      <div class="section-head">
+        <div class="section-icon info">&#9745;</div>
+        <div>
+          <div class="section-label">Phần 3</div>
+          <div class="section-title">Checklist</div>
+        </div>
+      </div>
+
+      <div class="check-grid">
+        <div class="check-col">
+          <div class="check-col-head">
+            <span>&#128100;</span>
+            <span>Bên Mua</span>
+          </div>
+          <ul>
+            <li>Tên công ty theo giấy ĐKKD</li>
+            <li>Địa chỉ trụ sở công ty</li>
+            <li>Email công ty</li>
+            <li>SĐT có mã quốc tế +84</li>
+            <li>Họ tên người đại diện</li>
+            <li>Tạo tài khoản Spaceship</li>
+            <li>Thiết lập Domain Contact</li>
+            <li>Gửi email cho Bên Bán</li>
+            <li>Xác nhận chấp nhận domain</li>
+          </ul>
+        </div>
+        <div class="check-col">
+          <div class="check-col-head">
+            <span>&#128640;</span>
+            <span>Bên Bán</span>
+          </div>
+          <ul>
+            <li>Nhận email Spaceship của Bên Mua</li>
+            <li>Xác nhận nhận đủ thanh toán</li>
+            <li>Push domain trên Spaceship</li>
+            <li>Kiểm tra chuyển thành công</li>
+            <li>Xóa domain khỏi Cloudflare</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-head">
+        <div class="section-icon info">&#10067;</div>
+        <div>
+          <div class="section-label">Phần 4</div>
+          <div class="section-title">Câu hỏi thường gặp</div>
+        </div>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card">
+          <div class="faq-q">Domain là gì?</div>
+          <div class="faq-a">Địa chỉ website trên internet, ví dụ: nghien.ai, google.com. Khi ai gõ "nghien.ai" vào trình duyệt, họ sẽ được dẫn đến website của bạn.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Spaceship là gì?</div>
+          <div class="faq-a">Nhà đăng ký tên miền quốc tế — nơi đăng ký, quản lý và gia hạn domain. Tương tự Mắt Bão, PA Vietnam ở Việt Nam.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Push domain là gì?</div>
+          <div class="faq-a">Chuyển quyền sở hữu domain giữa 2 tài khoản cùng Spaceship. Giống chuyển tiền giữa 2 tài khoản cùng ngân hàng — nhanh và đơn giản.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Mất bao lâu?</div>
+          <div class="faq-a">Push nội bộ Spaceship hoàn tất <strong>ngay lập tức</strong> hoặc trong vài phút.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Chi phí transfer?</div>
+          <div class="faq-a"><strong>$0</strong> — Push nội bộ Spaceship hoàn toàn miễn phí. Chỉ trả tiền mua domain cho Bên Bán và phí gia hạn hàng năm.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Chi phí duy trì?</div>
+          <div class="faq-a">Domain .ai gia hạn khoảng <strong>$80–140 USD/năm</strong> (~2–3.5 triệu VNĐ). Tối thiểu 2 năm mỗi lần gia hạn.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Sau khi mua cần làm gì?</div>
+          <div class="faq-a">Bật <strong>Auto-Renew</strong> tránh mất domain. Nếu có website: trỏ nameserver. Chưa có: giữ nguyên trong Spaceship.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Có rủi ro không?</div>
+          <div class="faq-a">Rất thấp. Domain chuyển trực tiếp, Spaceship ghi nhận lịch sử, cả 2 bên nhận email xác nhận.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    Tài liệu chuyển nhượng domain nghien.ai &middot; Cập nhật 24/03/2026
+    <br><a href="/transfer/namecheap.html" style="color: var(--accent); text-decoration: none;">Xem Phương án 2: Chuyển sang Namecheap &rarr;</a>
+  </footer>
+
+</body>
+</html>

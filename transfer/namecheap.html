@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuyển nghien.ai sang Namecheap</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #faf9f7;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-dim: #6b6560;
+      --text-light: #9a9490;
+      --accent: #de5833;
+      --accent-bg: #fef0ec;
+      --accent-border: rgba(222, 88, 51, 0.2);
+      --buyer: #1a6b4a;
+      --buyer-bg: #eef7f2;
+      --buyer-border: #c8e6d5;
+      --seller: #4a3a8a;
+      --seller-bg: #f0eef7;
+      --seller-border: #d1cce6;
+      --border: #e8e4df;
+      --warn-bg: #fef3f2;
+      --warn-border: #d44;
+      --font: 'Be Vietnam Pro', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      background: #0a0a0f;
+      color: #f5f0ea;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .header-domain {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .header-domain .tld { color: #e8b06a; }
+
+    .header-title {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #8a8279;
+    }
+
+    .header-badge {
+      display: inline-block;
+      margin-top: 0.8rem;
+      background: rgba(222, 88, 51, 0.15);
+      color: #ff7a55;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      background: rgba(250, 249, 247, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.5rem;
+      z-index: 50;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      justify-content: center;
+    }
+
+    .nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-dim);
+      padding: 0.35rem 0.8rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav a:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+
+    .nav a.back {
+      color: var(--text-light);
+      border: none;
+      padding-left: 0;
+    }
+
+    .nav a.back:hover { color: var(--accent); background: none; }
+
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Compare banner */
+    .compare-banner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .compare-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .compare-card.recommended {
+      border-color: var(--buyer-border);
+      background: var(--buyer-bg);
+    }
+
+    .compare-card-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+    }
+
+    .compare-card.recommended .compare-card-label { color: var(--buyer); }
+
+    .compare-card-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .compare-card-price {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .compare-card-price.free { color: var(--buyer); }
+    .compare-card-price.paid { color: var(--text); }
+
+    .compare-card-note {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
+    }
+
+    .compare-card-tag {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: var(--buyer);
+      color: #fff;
+    }
+
+    .compare-vs {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    /* Cost table */
+    .cost-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .cost-table th {
+      text-align: left;
+      font-weight: 600;
+      padding: 0.7rem 1rem;
+      background: #f5f3f0;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+
+    .cost-table td {
+      padding: 0.7rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .cost-table .highlight { background: var(--accent-bg); font-weight: 600; }
+
+    .price { font-family: var(--mono); font-weight: 500; }
+    .price-free { color: var(--buyer); font-weight: 700; }
+
+    /* Sections */
+    .section { margin-top: 2.5rem; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .section-icon.buyer { background: var(--buyer-bg); }
+    .section-icon.seller { background: var(--seller-bg); }
+    .section-icon.info { background: var(--accent-bg); }
+
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* Infographic flow */
+    .flow-grid { display: flex; flex-direction: column; gap: 0; }
+
+    .flow-card {
+      display: grid;
+      grid-template-columns: 50px 1fr;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      position: relative;
+    }
+
+    .flow-card:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 25px;
+      top: calc(100% - 0.3rem);
+      width: 2px;
+      height: calc(0.3rem + 0.8rem);
+      background: var(--border);
+    }
+
+    .flow-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .flow-badge.seller { background: var(--seller-bg); border: 1.5px solid var(--seller-border); }
+    .flow-badge.buyer { background: var(--buyer-bg); border: 1.5px solid var(--buyer-border); }
+    .flow-badge.both { background: var(--accent-bg); border: 1.5px solid var(--accent-border); }
+    .flow-badge.done { background: var(--buyer); border-color: var(--buyer); color: #fff; }
+
+    .flow-body { padding-top: 0.1rem; }
+
+    .flow-who {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.1rem;
+    }
+
+    .flow-who.buyer { color: var(--buyer); }
+    .flow-who.seller { color: var(--seller); }
+    .flow-who.both { color: var(--accent); }
+
+    .flow-label { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.1rem; }
+    .flow-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* Step cards */
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .step-num {
+      position: absolute;
+      top: -0.6rem;
+      left: 1.2rem;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .step-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+    .step ol, .step ul { padding-left: 1.3rem; font-size: 0.86rem; color: var(--text-dim); }
+    .step li { margin-bottom: 0.3rem; }
+    .step p { font-size: 0.86rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+
+    code {
+      font-family: var(--mono);
+      background: #f0eeeb;
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      font-size: 0.82em;
+    }
+
+    .callout {
+      background: var(--accent-bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 0.9rem 1.1rem;
+      margin: 0.8rem 0;
+      font-size: 0.85rem;
+    }
+
+    .callout strong { color: var(--accent); }
+
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); }
+    .callout.warn strong { color: var(--warn-border); }
+
+    .callout.tip { background: var(--buyer-bg); border-left-color: var(--buyer); }
+    .callout.tip strong { color: var(--buyer); }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .faq-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+    }
+
+    .faq-q { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .faq-a { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+
+    .doc-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.7rem;
+      color: var(--text-light);
+      border-top: 1px solid var(--border);
+    }
+
+    .doc-footer a { color: var(--text-dim); text-decoration: none; }
+    .doc-footer a:hover { color: var(--accent); }
+
+    a { color: var(--accent); }
+    hr { border: none; height: 1px; background: var(--border); margin: 2.5rem 0; }
+    strong { font-weight: 600; }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 1.5rem 1rem 3rem; }
+      .compare-banner { grid-template-columns: 1fr; gap: 0.5rem; }
+      .compare-vs { text-align: center; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .flow-card { grid-template-columns: 42px 1fr; }
+      .flow-badge { width: 42px; height: 42px; font-size: 1.1rem; border-radius: 10px; }
+      .flow-card:not(:last-child)::after { left: 21px; }
+      .header { padding: 2rem 1rem; }
+      .header-domain { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-domain">nghien<span class="tld">.ai</span></div>
+    <div class="header-title">Chuyển nhượng sang Namecheap</div>
+    <div class="header-badge">Phương án 2: Transfer sang registrar khác</div>
+  </div>
+
+  <nav class="nav">
+    <a href="/transfer/" class="back">&larr; Phương án 1 (Spaceship)</a>
+    <a href="#compare">So sánh</a>
+    <a href="#cost">Chi phí</a>
+    <a href="#flow">Quy trình</a>
+    <a href="#seller">Bên Bán</a>
+    <a href="#buyer">Bên Mua</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <main class="wrap">
+
+    <!-- COMPARE -->
+    <section id="compare">
+      <div class="compare-banner">
+        <div class="compare-card recommended">
+          <div class="compare-card-label">Phương án 1</div>
+          <div class="compare-card-name">Push nội bộ Spaceship</div>
+          <div class="compare-card-price free">$0</div>
+          <div class="compare-card-note">Miễn phí &middot; Ngay lập tức</div>
+          <div class="compare-card-tag">Khuyến nghị</div>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-card">
+          <div class="compare-card-label">Phương án 2</div>
+          <div class="compare-card-name">Transfer sang Namecheap</div>
+          <div class="compare-card-price paid">~$75</div>
+          <div class="compare-card-note">Phí transfer &middot; 5–7 ngày</div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- COST -->
+    <section class="section" id="cost">
+      <div class="section-head">
+        <div class="section-icon info">&#128176;</div>
+        <div>
+          <div class="section-label">Chi phí chi tiết</div>
+          <div class="section-title">Bảng giá Namecheap cho domain .ai</div>
+        </div>
+      </div>
+
+      <table class="cost-table">
+        <thead>
+          <tr><th>Hạng mục</th><th>Giá (USD)</th><th>Ghi chú</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><strong>Phí transfer vào Namecheap</strong></td>
+            <td><span class="price">~$74.95–99.98</span></td>
+            <td>Bao gồm gia hạn thêm thời gian</td>
+          </tr>
+          <tr>
+            <td>Đăng ký mới .ai</td>
+            <td><span class="price">~$62.99/năm</span></td>
+            <td>Giá khuyến mãi, có thể thay đổi</td>
+          </tr>
+          <tr>
+            <td>Gia hạn hàng năm</td>
+            <td><span class="price">~$74.95–91.98/năm</span></td>
+            <td>Tối thiểu 2 năm mỗi lần</td>
+          </tr>
+          <tr>
+            <td>WhoisGuard (ẩn WHOIS)</td>
+            <td><span class="price-free">Miễn phí</span></td>
+            <td>Có thể không khả dụng cho .ai</td>
+          </tr>
+          <tr>
+            <td>Phí ICANN</td>
+            <td><span class="price">$0.18/năm</span></td>
+            <td>Phí bắt buộc</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Tổng chi phí bên mua cần trả:</strong> Tiền mua domain (thỏa thuận với bên bán) + phí transfer vào Namecheap (~$75–100) + phí gia hạn hàng năm (~$75–92/năm).
+      </div>
+
+      <div class="callout tip">
+        <strong>So sánh:</strong> Push nội bộ Spaceship phí transfer $0, không phát sinh thêm chi phí. Xem <a href="/transfer/">Phương án 1</a>.
+      </div>
+
+      <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.8rem;">
+        * Giá tham khảo từ domnest.com và Namecheap, cập nhật 03/2026. Giá có thể thay đổi — kiểm tra trực tiếp tại
+        <a href="https://www.namecheap.com/domains/transfer/" target="_blank" rel="noopener">namecheap.com/domains/transfer</a>.
+      </p>
+    </section>
+
+    <hr>
+
+    <!-- FLOW -->
+    <section class="section" id="flow">
+      <div class="section-head">
+        <div class="section-icon info">&#128269;</div>
+        <div>
+          <div class="section-label">Tổng quan</div>
+          <div class="section-title">Quy trình chuyển nhượng qua Namecheap</div>
+        </div>
+      </div>
+
+      <div class="flow-grid">
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#128100;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Tạo tài khoản Namecheap</div>
+            <div class="flow-desc">Đăng ký tại namecheap.com dưới danh nghĩa công ty</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge both">&#129309;</div>
+          <div class="flow-body">
+            <div class="flow-who both">Hai bên</div>
+            <div class="flow-label">Thống nhất giá &amp; thanh toán</div>
+            <div class="flow-desc">Bên Mua thanh toán cho Bên Bán trước khi transfer</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge seller">&#128275;</div>
+          <div class="flow-body">
+            <div class="flow-who seller">Bên Bán</div>
+            <div class="flow-label">Unlock domain &amp; lấy mã EPP</div>
+            <div class="flow-desc">Mở khóa domain trên Spaceship &rarr; lấy mã Authorization (EPP code)</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge seller">&#128231;</div>
+          <div class="flow-body">
+            <div class="flow-who seller">Bên Bán</div>
+            <div class="flow-label">Gửi mã EPP cho Bên Mua</div>
+            <div class="flow-desc">Mã EPP là "chìa khóa" để chuyển domain</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#128640;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Khởi tạo transfer trên Namecheap</div>
+            <div class="flow-desc">Nhập domain + mã EPP &rarr; thanh toán phí transfer (~$75–100)</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge seller">&#9993;</div>
+          <div class="flow-body">
+            <div class="flow-who seller">Bên Bán</div>
+            <div class="flow-label">Xác nhận chuyển (qua email)</div>
+            <div class="flow-desc">Spaceship gửi email xác nhận &rarr; Bên Bán approve để đẩy nhanh</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge buyer">&#9203;</div>
+          <div class="flow-body">
+            <div class="flow-who buyer">Bên Mua</div>
+            <div class="flow-label">Chờ hoàn tất (5–7 ngày)</div>
+            <div class="flow-desc">Nếu Bên Bán approve nhanh: có thể xong trong cùng ngày</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="flow-badge done">&#10003;</div>
+          <div class="flow-body">
+            <div class="flow-who" style="color: var(--buyer)">Hoàn tất</div>
+            <div class="flow-label">Domain thuộc về Bên Mua trên Namecheap</div>
+            <div class="flow-desc">Bật Auto-Renew, thiết lập DNS theo nhu cầu</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- SELLER -->
+    <section class="section" id="seller">
+      <div class="section-head">
+        <div class="section-icon seller">&#128275;</div>
+        <div>
+          <div class="section-label">Bên Bán</div>
+          <div class="section-title">Bên Bán cần làm gì (Spaceship)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 1</div>
+        <div class="step-title">Tắt WHOIS Privacy (nếu có)</div>
+        <ol>
+          <li>Đăng nhập <a href="https://www.spaceship.com" target="_blank" rel="noopener">spaceship.com</a></li>
+          <li>Vào domain nghien.ai &rarr; tìm mục <code>Privacy Protection</code></li>
+          <li>Tắt (disable) WHOIS Privacy nếu đang bật</li>
+        </ol>
+        <div class="callout">
+          <strong>Tại sao?</strong> Một số registrar yêu cầu WHOIS phải hiện thông tin thật để gửi email xác nhận transfer.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 2</div>
+        <div class="step-title">Unlock domain &amp; lấy mã EPP</div>
+        <ol>
+          <li>Vào <code>Domain Portfolio</code> hoặc <code>Launchpad</code> &rarr; <code>Domain Portfolio</code></li>
+          <li>Nhấn vào tên domain <strong>nghien.ai</strong></li>
+          <li>Trong menu bên phải, chọn <code>Transfer</code> &rarr; <code>Transfer domain</code></li>
+          <li>Xác nhận disclaimer về ngắt kết nối dịch vụ</li>
+          <li>Nhấn <code>Unlock Domain</code></li>
+          <li><strong>Mã EPP/Authorization code sẽ hiện ra</strong> &rarr; copy và lưu lại</li>
+        </ol>
+        <div class="callout warn">
+          <strong>Quan trọng:</strong> Mã EPP phân biệt HOA/thường (case-sensitive). Copy chính xác, không thêm khoảng trắng.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 3</div>
+        <div class="step-title">Gửi mã EPP cho Bên Mua</div>
+        <p>Gửi <strong>mã EPP</strong> cho Bên Mua qua kênh an toàn (email, tin nhắn). Bên Mua cần mã này để khởi tạo transfer trên Namecheap.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 4</div>
+        <div class="step-title">Xác nhận transfer (approve qua email)</div>
+        <ol>
+          <li>Sau khi Bên Mua khởi tạo transfer, Spaceship gửi email hỏi xác nhận</li>
+          <li>Nhấn <strong>Approve</strong> trong email để đẩy nhanh quá trình</li>
+          <li>Nếu không làm gì: transfer tự động hoàn tất sau 5 ngày</li>
+        </ol>
+        <div class="callout tip">
+          <strong>Mẹo:</strong> Approve ngay khi nhận email &rarr; transfer có thể hoàn tất trong cùng ngày.
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- BUYER -->
+    <section class="section" id="buyer">
+      <div class="section-head">
+        <div class="section-icon buyer">&#128100;</div>
+        <div>
+          <div class="section-label">Bên Mua</div>
+          <div class="section-title">Bên Mua cần làm gì (Namecheap)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 1</div>
+        <div class="step-title">Tạo tài khoản Namecheap</div>
+        <ol>
+          <li>Truy cập <a href="https://www.namecheap.com/myaccount/signup/" target="_blank" rel="noopener">namecheap.com/myaccount/signup</a></li>
+          <li>Điền thông tin: username, email công ty, mật khẩu</li>
+          <li>Nhấn <code>Create Account</code></li>
+          <li>Xác minh email</li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 2</div>
+        <div class="step-title">Cập nhật thông tin công ty</div>
+        <ol>
+          <li>Đăng nhập &rarr; vào <code>Profile</code> (góc trên phải)</li>
+          <li>Điền đầy đủ:
+            <br><strong>Account type:</strong> Organization
+            <br><strong>Organization name:</strong> Tên công ty (theo giấy ĐKKD)
+            <br><strong>Address:</strong> Địa chỉ trụ sở
+            <br><strong>City / Country:</strong> Thành phố / Vietnam
+            <br><strong>Phone:</strong> +84...
+          </li>
+          <li>Nhấn <code>Save Changes</code></li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 3</div>
+        <div class="step-title">Khởi tạo transfer</div>
+        <ol>
+          <li>Vào <a href="https://www.namecheap.com/domains/transfer/" target="_blank" rel="noopener">namecheap.com/domains/transfer</a></li>
+          <li>Nhập <strong>nghien.ai</strong> vào ô tìm kiếm</li>
+          <li>Nhấn <code>Transfer</code></li>
+          <li>Hệ thống hiển thị giá transfer &rarr; nhấn <code>Add to Cart</code></li>
+          <li>Nhập <strong>mã EPP</strong> (Authorization code) nhận từ Bên Bán</li>
+          <li>Tiến hành thanh toán</li>
+        </ol>
+        <p style="margin-top: 0.5rem;"><strong>Phương thức thanh toán:</strong> Visa/Mastercard, PayPal, Bitcoin, Account Funds</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 4</div>
+        <div class="step-title">Chờ hoàn tất transfer</div>
+        <ol>
+          <li>Domain sẽ có trạng thái <code>pendingTransfer</code></li>
+          <li>Spaceship (registrar cũ) có tối đa 5 ngày để phê duyệt</li>
+          <li>Nếu Bên Bán approve nhanh: có thể xong trong <strong>cùng ngày</strong></li>
+          <li>Theo dõi trạng thái tại Namecheap &rarr; <code>Domain List</code> &rarr; <code>Transfer</code></li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Bước 5</div>
+        <div class="step-title">Sau khi transfer hoàn tất</div>
+        <ul>
+          <li><strong>Bật Auto-Renew</strong> trong Namecheap để tự gia hạn</li>
+          <li>Thiết lập <strong>DNS/Nameservers</strong> theo nhu cầu</li>
+          <li>Kiểm tra <strong>WHOIS</strong> — đảm bảo thông tin công ty hiển thị đúng</li>
+          <li>Bật <strong>WhoisGuard</strong> nếu khả dụng cho .ai</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-head">
+        <div class="section-icon info">&#10067;</div>
+        <div>
+          <div class="section-label">FAQ</div>
+          <div class="section-title">Câu hỏi thường gặp</div>
+        </div>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card">
+          <div class="faq-q">Mã EPP là gì?</div>
+          <div class="faq-a">Mã bí mật (giống mã OTP) do registrar cấp, dùng để xác minh quyền chuyển domain. Mỗi domain có 1 mã riêng, phân biệt HOA/thường.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Transfer mất bao lâu?</div>
+          <div class="faq-a">Tối đa <strong>5–7 ngày</strong>. Nếu Bên Bán approve email xác nhận ngay: có thể xong trong <strong>cùng ngày</strong>.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Phí transfer là bao nhiêu?</div>
+          <div class="faq-a">Khoảng <strong>$75–100 USD</strong> cho .ai domain. Kiểm tra giá chính xác tại <a href="https://www.namecheap.com/domains/transfer/" target="_blank">namecheap.com</a>.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Tại sao không push Spaceship?</div>
+          <div class="faq-a">Push nội bộ nhanh hơn và miễn phí. Chỉ chọn Namecheap nếu Bên Mua đã có tài khoản Namecheap hoặc muốn quản lý tập trung ở đó.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Domain bị khóa 60 ngày?</div>
+          <div class="faq-a">ICANN quy định khóa 60 ngày sau khi đăng ký hoặc transfer. Domain nghien.ai đăng ký từ 03/2025 nên <strong>đã qua thời gian khóa</strong>.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Website có bị gián đoạn không?</div>
+          <div class="faq-a">Có thể có downtime ngắn trong quá trình transfer nếu DNS thay đổi. Nên giữ nguyên nameserver cũ trong lúc transfer.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Chi phí duy trì hàng năm?</div>
+          <div class="faq-a">Gia hạn .ai trên Namecheap: <strong>~$75–92 USD/năm</strong>. Tối thiểu 2 năm mỗi lần gia hạn (~$150–184).</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">Namecheap có uy tín không?</div>
+          <div class="faq-a">Namecheap là registrar lớn thứ 2 thế giới (sau GoDaddy), hoạt động từ 2000, quản lý hơn 17 triệu domain.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    Tài liệu chuyển nhượng domain nghien.ai &middot; Cập nhật 24/03/2026
+    <br><a href="/transfer/">&#8592; Xem Phương án 1: Push nội bộ Spaceship (miễn phí)</a>
+  </footer>
+
+</body>
+</html>

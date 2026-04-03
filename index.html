@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>nghien.ai — Domain Acquired</title>
+  <meta name="description" content="nghien.ai — tên miền .ai premium đã được thâu tóm.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://nghien.ai/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="nghien.ai — Domain Acquired">
+  <meta property="og:description" content="nghien.ai đã được thâu tóm. Coming soon.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nghien.ai/">
+
+  <!-- Favicon -->
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Share+Tech+Mono&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --green: #00ff41;
+      --green-dim: #00cc33;
+      --green-dark: #003300;
+      --green-glow: rgba(0, 255, 65, 0.15);
+      --red: #ff0040;
+      --cyan: #00e5ff;
+      --white: #e0e0e0;
+      --gray: #555;
+      --mono: 'JetBrains Mono', 'Share Tech Mono', monospace;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--green);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Scanline effect */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 65, 0.03) 2px,
+        rgba(0, 255, 65, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* CRT flicker */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 255, 65, 0.02);
+      pointer-events: none;
+      z-index: 101;
+      animation: flicker 0.15s infinite;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.97; }
+      5% { opacity: 0.9; }
+      10% { opacity: 0.98; }
+      15% { opacity: 0.92; }
+      20% { opacity: 0.99; }
+      50% { opacity: 0.96; }
+      80% { opacity: 0.98; }
+      100% { opacity: 0.97; }
+    }
+
+    /* Matrix rain canvas */
+    #matrix-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.12;
+    }
+
+    /* Glitch overlay */
+    .glitch-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      animation: glitchOverlay 8s infinite;
+    }
+
+    @keyframes glitchOverlay {
+      0%, 95%, 100% { opacity: 0; }
+      96% {
+        opacity: 1;
+        background: linear-gradient(
+          transparent 0%,
+          rgba(0, 255, 65, 0.05) 40%,
+          rgba(0, 255, 65, 0.1) 40.5%,
+          transparent 41%,
+          transparent 100%
+        );
+        transform: translateY(-30vh);
+      }
+      97% { transform: translateY(10vh); }
+      98% { transform: translateY(-15vh); opacity: 0.5; }
+    }
+
+    /* Top bar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 10;
+      border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+      opacity: 0;
+      animation: fadeIn 0.5s ease 3s forwards;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .topbar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green), 0 0 20px var(--green-glow);
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .topbar-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green-dim);
+    }
+
+    .topbar-right {
+      font-size: 0.65rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 2rem;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* Terminal prompt lines */
+    .terminal-lines {
+      text-align: left;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      font-size: 0.75rem;
+      color: var(--gray);
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeIn 0.3s ease 0.5s forwards;
+    }
+
+    .terminal-lines .line {
+      opacity: 0;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .terminal-lines .prompt {
+      color: var(--green-dim);
+    }
+
+    .terminal-lines .cmd {
+      color: var(--white);
+    }
+
+    .terminal-lines .success {
+      color: var(--green);
+    }
+
+    .terminal-lines .warn {
+      color: #ffaa00;
+    }
+
+    .terminal-lines .err {
+      color: var(--red);
+    }
+
+    /* ACQUIRED title */
+    .acquired-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.8rem;
+      opacity: 0;
+      animation: fadeIn 0.3s ease 3.2s forwards;
+      text-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+    }
+
+    .domain {
+      font-family: var(--mono);
+      font-size: clamp(2.8rem, 11vw, 7.5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      margin-bottom: 0.3em;
+      position: relative;
+      color: var(--green);
+      text-shadow:
+        0 0 10px var(--green),
+        0 0 40px var(--green-glow),
+        0 0 80px rgba(0, 255, 65, 0.08);
+    }
+
+    .domain .char {
+      display: inline-block;
+      opacity: 0;
+      animation: hackReveal 0.1s steps(1) forwards;
+    }
+
+    .domain .dot {
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan), 0 0 40px rgba(0, 229, 255, 0.3);
+    }
+
+    .domain .tld {
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan), 0 0 40px rgba(0, 229, 255, 0.3);
+    }
+
+    @keyframes hackReveal {
+      to { opacity: 1; }
+    }
+
+    /* Glitch effect on domain */
+    .domain:hover {
+      animation: glitchText 0.3s linear;
+    }
+
+    @keyframes glitchText {
+      0% { transform: translate(0); }
+      20% { transform: translate(-3px, 2px); text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); }
+      40% { transform: translate(3px, -1px); text-shadow: -3px 0 var(--red), 3px 0 var(--cyan); }
+      60% { transform: translate(-1px, 1px); text-shadow: 2px 0 var(--red), -2px 0 var(--cyan); }
+      80% { transform: translate(2px, -2px); text-shadow: -2px 0 var(--red), 2px 0 var(--cyan); }
+      100% { transform: translate(0); text-shadow: 0 0 10px var(--green), 0 0 40px var(--green-glow); }
+    }
+
+    /* Status line */
+    .status-line {
+      font-size: 0.8rem;
+      color: var(--green-dim);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 3.5s forwards;
+      letter-spacing: 0.05em;
+    }
+
+    .status-line .bracket {
+      color: var(--gray);
+    }
+
+    .status-line .highlight {
+      color: var(--green);
+      font-weight: 700;
+      text-shadow: 0 0 8px var(--green-glow);
+    }
+
+    /* Info box */
+    .info-box {
+      display: inline-block;
+      border: 1px solid rgba(0, 255, 65, 0.2);
+      padding: 1.2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 3.8s forwards;
+      background: rgba(0, 255, 65, 0.02);
+    }
+
+    .info-box::before {
+      content: "/* ";
+      position: absolute;
+      top: -0.6rem;
+      left: 1rem;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      font-size: 0.65rem;
+      color: var(--gray);
+    }
+
+    .info-box::after {
+      content: " */";
+      position: absolute;
+      top: -0.6rem;
+      left: 2.5rem;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      font-size: 0.65rem;
+      color: var(--gray);
+    }
+
+    .info-box::before {
+      content: "INFO";
+      color: var(--green-dim);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+    }
+
+    .info-box::after {
+      content: none;
+    }
+
+    .info-text {
+      font-size: 0.85rem;
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    .info-text .val {
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .info-text .key {
+      color: var(--gray);
+    }
+
+    /* CTA */
+    .cta-wrap {
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 4.2s forwards;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--bg);
+      background: var(--green);
+      padding: 0.9rem 2.5rem;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px var(--green-glow), 0 0 60px rgba(0, 255, 65, 0.1);
+    }
+
+    .cta:hover {
+      background: var(--cyan);
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.3), 0 0 80px rgba(0, 229, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .cta .arrow {
+      transition: transform 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .cta:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* Contact */
+    .contact {
+      opacity: 0;
+      animation: fadeIn 0.5s ease 4.5s forwards;
+    }
+
+    .contact a {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+      border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+      padding-bottom: 2px;
+    }
+
+    .contact a:hover {
+      color: var(--green);
+      text-shadow: 0 0 8px var(--green-glow);
+      border-color: var(--green);
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      padding: 1.2rem 2rem;
+      z-index: 10;
+      border-top: 1px solid rgba(0, 255, 65, 0.05);
+      opacity: 0;
+      animation: fadeIn 0.5s ease 4.8s forwards;
+    }
+
+    .footer-text {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(0, 255, 65, 0.2);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes typeIn {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .topbar { padding: 0.8rem 1.2rem; }
+      .container { padding: 1.5rem; }
+      .info-box { padding: 1rem 1.5rem; }
+      .terminal-lines { font-size: 0.6rem; padding: 0 0.5rem; }
+      .cta { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Matrix rain -->
+  <canvas id="matrix-canvas" aria-hidden="true"></canvas>
+
+  <!-- Glitch overlay -->
+  <div class="glitch-overlay" aria-hidden="true"></div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-dot"></span>
+      <span class="topbar-label">Secure Connection</span>
+    </div>
+    <span class="topbar-right" id="clock"></span>
+  </header>
+
+  <main class="container">
+
+    <!-- Terminal output -->
+    <div class="terminal-lines" id="terminal"></div>
+
+    <!-- Domain acquired -->
+    <p class="acquired-label">&#9608; DOMAIN ACQUIRED</p>
+
+    <h1 class="domain" id="domain-name" aria-label="nghien.ai"></h1>
+
+    <p class="status-line">
+      <span class="bracket">[</span>
+      <span class="highlight">STATUS</span>
+      <span class="bracket">]</span>
+      Tên miền đã được thâu tóm thành công
+    </p>
+
+    <div class="info-box">
+      <p class="info-text">
+        <span class="key">domain:</span> <span class="val">nghien.ai</span><br>
+        <span class="key">meaning:</span> <span class="val">Nghiện AI</span><br>
+        <span class="key">status:</span> <span class="val">ACQUIRED</span><br>
+        <span class="key">purpose:</span> <span class="val">Coming Soon...</span>
+      </p>
+    </div>
+
+    <div class="cta-wrap">
+      <a class="cta" id="cta-btn" href="#" role="button">
+        <span>$ contact --owner</span>
+        <span class="arrow">&rarr;</span>
+      </a>
+    </div>
+
+    <div class="contact">
+      <span id="email-link-wrap"></span>
+    </div>
+
+    <noscript>
+      <div class="contact">
+        <p>Email: contact [at] nghien [dot] ai</p>
+      </div>
+    </noscript>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-text">&copy; 2026 nghien.ai &mdash; all rights reserved</span>
+  </footer>
+
+  <script>
+    (function() {
+      // ── Matrix Rain ──────────────────────────────────
+      var canvas = document.getElementById('matrix-canvas');
+      var ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      var chars = 'nghien.aiアイウエオカキクケコ01ABCDEFabcdef{}[]<>/\\|=+-*@#$%&ガギグゲゴ';
+      var fontSize = 14;
+      var columns = Math.floor(canvas.width / fontSize);
+      var drops = [];
+      for (var i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
+      }
+
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff41';
+        ctx.font = fontSize + 'px monospace';
+
+        for (var i = 0; i < drops.length; i++) {
+          var char = chars[Math.floor(Math.random() * chars.length)];
+          var x = i * fontSize;
+          var y = drops[i] * fontSize;
+
+          if (y > 0) {
+            ctx.globalAlpha = Math.random() * 0.5 + 0.1;
+            ctx.fillText(char, x, y);
+          }
+
+          if (y > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(drawMatrix);
+      }
+      drawMatrix();
+
+      // ── Terminal typing effect ────────────────────────
+      var termLines = [
+        { prompt: 'root@nghien:~$ ', cmd: 'whois nghien.ai', delay: 800 },
+        { text: '  Domain Name: NGHIEN.AI', cls: '', delay: 200 },
+        { text: '  Registry Status: ACTIVE', cls: 'success', delay: 150 },
+        { text: '  Registrant: [REDACTED]', cls: 'warn', delay: 150 },
+        { prompt: 'root@nghien:~$ ', cmd: 'nslookup nghien.ai', delay: 600 },
+        { text: '  Server: dns.cloudflare.com', cls: '', delay: 150 },
+        { text: '  Address: 104.21.xx.xx', cls: '', delay: 150 },
+        { prompt: 'root@nghien:~$ ', cmd: 'sudo acquire --domain nghien.ai --force', delay: 800 },
+        { text: '  [################] 100%', cls: 'success', delay: 400 },
+        { text: '  ✓ DOMAIN ACQUIRED SUCCESSFULLY', cls: 'success', delay: 300 },
+      ];
+
+      var terminal = document.getElementById('terminal');
+      var lineIndex = 0;
+      var baseDelay = 500;
+
+      function addTermLine() {
+        if (lineIndex >= termLines.length) return;
+        var line = termLines[lineIndex];
+        var div = document.createElement('div');
+        div.className = 'line';
+
+        if (line.prompt) {
+          var promptSpan = document.createElement('span');
+          promptSpan.className = 'prompt';
+          promptSpan.textContent = line.prompt;
+          div.appendChild(promptSpan);
+          var cmdSpan = document.createElement('span');
+          cmdSpan.className = 'cmd';
+          cmdSpan.textContent = line.cmd;
+          div.appendChild(cmdSpan);
+        } else {
+          div.className = 'line ' + (line.cls || '');
+          div.textContent = line.text;
+        }
+
+        terminal.appendChild(div);
+
+        // Animate in
+        requestAnimationFrame(function() {
+          div.style.opacity = '1';
+        });
+
+        lineIndex++;
+        if (lineIndex < termLines.length) {
+          setTimeout(addTermLine, line.delay || 200);
+        }
+      }
+
+      setTimeout(addTermLine, 600);
+
+      // ── Domain name character scramble reveal ─────────
+      var name = 'nghien';
+      var dot = '.';
+      var tld = 'ai';
+      var el = document.getElementById('domain-name');
+      var allChars = (name + dot + tld).split('');
+      var scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>{}[]';
+      var spans = [];
+
+      allChars.forEach(function(c, i) {
+        var span = document.createElement('span');
+        span.className = 'char';
+        if (i === name.length) span.classList.add('dot');
+        if (i > name.length) span.classList.add('tld');
+        span.textContent = scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+        span.style.animationDelay = (3 + i * 0.05) + 's';
+        el.appendChild(span);
+        spans.push({ el: span, target: c, index: i });
+      });
+
+      // Scramble then reveal
+      var scrambleStart = 2600;
+      var scrambleInterval = 40;
+      var revealStart = 3000;
+
+      spans.forEach(function(item) {
+        var scrambleTimer = setInterval(function() {
+          item.el.textContent = scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+        }, scrambleInterval);
+
+        setTimeout(function() {
+          clearInterval(scrambleTimer);
+          item.el.textContent = item.target;
+        }, revealStart + item.index * 80);
+      });
+
+      // ── Email obfuscation ────────────────────────────
+      var u = 'contact';
+      var d = 'nghien.ai';
+      var addr = u + '@' + d;
+
+      var cta = document.getElementById('cta-btn');
+      cta.href = 'mailto:' + addr + '?subject=Inquiry%20about%20nghien.ai';
+
+      var wrap = document.getElementById('email-link-wrap');
+      var a = document.createElement('a');
+      a.href = 'mailto:' + addr;
+      a.textContent = addr;
+      wrap.appendChild(a);
+
+      // ── Clock ────────────────────────────────────────
+      var clockEl = document.getElementById('clock');
+      function updateClock() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var s = String(now.getSeconds()).padStart(2, '0');
+        clockEl.textContent = h + ':' + m + ':' + s + ' UTC+7';
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // ── Random glitch on domain ──────────────────────
+      setInterval(function() {
+        if (Math.random() > 0.92) {
+          el.style.transform = 'translate(' + (Math.random() * 4 - 2) + 'px,' + (Math.random() * 4 - 2) + 'px)';
+          el.style.textShadow = (Math.random() * 4 - 2) + 'px 0 #ff0040, ' + (Math.random() * -4 + 2) + 'px 0 #00e5ff';
+          setTimeout(function() {
+            el.style.transform = '';
+            el.style.textShadow = '0 0 10px #00ff41, 0 0 40px rgba(0,255,65,0.15), 0 0 80px rgba(0,255,65,0.08)';
+          }, 100 + Math.random() * 100);
+        }
+      }, 200);
+
+    })();
+  </script>
+
+</body>
+</html>
