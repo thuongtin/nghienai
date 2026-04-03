@@ -460,6 +460,53 @@
       to { width: 100%; }
     }
 
+    /* Redirect countdown */
+    .redirect-bar {
+      position: fixed;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      white-space: nowrap;
+    }
+
+    .redirect-bar.visible { opacity: 1; }
+
+    .redirect-bar .count {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      text-shadow: 0 0 10px var(--green-glow);
+      min-width: 1.2rem;
+      text-align: center;
+    }
+
+    .redirect-bar .bar-track {
+      width: 120px;
+      height: 2px;
+      background: rgba(0, 255, 65, 0.12);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .redirect-bar .bar-fill {
+      height: 100%;
+      background: var(--green);
+      width: 100%;
+      box-shadow: 0 0 6px var(--green-glow);
+      transform-origin: left;
+      transition: transform linear;
+    }
+
     /* Responsive */
     @media (max-width: 640px) {
       .topbar { padding: 0.8rem 1.2rem; }
@@ -530,6 +577,14 @@
       </div>
     </noscript>
   </main>
+
+  <!-- Redirect countdown bar -->
+  <div class="redirect-bar" id="redirect-bar">
+    <span>Chuyển hướng sau</span>
+    <span class="count" id="countdown-num">5</span>
+    <span>giây</span>
+    <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+  </div>
 
   <footer class="footer">
     <span class="footer-text">&copy; 2026 nghien.ai &mdash; all rights reserved</span>
@@ -708,6 +763,38 @@
           }, 100 + Math.random() * 100);
         }
       }, 200);
+
+      // ── Countdown & redirect ─────────────────────────
+      var REDIRECT_URL = 'https://www.facebook.com/groups/aiartworksvn';
+      var COUNTDOWN_SECS = 5;
+      var EFFECTS_DONE_AT = 5500; // ms — after all animations finish
+
+      setTimeout(function() {
+        var bar = document.getElementById('redirect-bar');
+        var numEl = document.getElementById('countdown-num');
+        var fillEl = document.getElementById('bar-fill');
+        var remaining = COUNTDOWN_SECS;
+
+        bar.classList.add('visible');
+
+        // Start progress bar shrink
+        fillEl.style.transition = 'transform ' + COUNTDOWN_SECS + 's linear';
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            fillEl.style.transform = 'scaleX(0)';
+          });
+        });
+
+        // Tick every second
+        var ticker = setInterval(function() {
+          remaining--;
+          numEl.textContent = remaining;
+          if (remaining <= 0) {
+            clearInterval(ticker);
+            window.location.href = REDIRECT_URL;
+          }
+        }, 1000);
+      }, EFFECTS_DONE_AT);
 
     })();
   </script>
