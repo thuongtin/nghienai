@@ -460,51 +460,217 @@
       to { width: 100%; }
     }
 
-    /* Redirect countdown */
-    .redirect-bar {
+    /* Hack takeover panel */
+    .hack-panel {
       position: fixed;
-      bottom: 3rem;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .hack-panel.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Dark overlay that intensifies */
+    .hack-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: -1;
+    }
+
+    /* Red border flash on panel */
+    .hack-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--red);
+      z-index: -1;
+      animation: borderFlash 0.4s steps(1) infinite;
+      opacity: 0;
+    }
+
+    .hack-panel.active::after { opacity: 1; }
+
+    @keyframes borderFlash {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.6; }
+    }
+
+    .hack-box {
+      border: 1px solid rgba(255,0,64,0.4);
+      padding: 2rem 3rem;
+      text-align: center;
+      position: relative;
+      max-width: 520px;
+      width: 90%;
+      animation: hackBoxShake 0.08s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .hack-panel.shaking .hack-box {
+      animation-play-state: running;
+    }
+
+    @keyframes hackBoxShake {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-2px, 1px); }
+      50%  { transform: translate(2px, -1px); }
+      75%  { transform: translate(-1px, 2px); }
+      100% { transform: translate(1px, -2px); }
+    }
+
+    .hack-box::before {
+      content: "⚠ INTRUSION DETECTED";
+      position: absolute;
+      top: -0.7rem;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 20;
+      background: var(--bg);
+      padding: 0 0.8rem;
+      font-size: 0.6rem;
+      font-family: var(--mono);
+      letter-spacing: 0.2em;
+      color: var(--red);
+      text-shadow: 0 0 10px rgba(255,0,64,0.6);
+      white-space: nowrap;
+      animation: labelBlink 0.5s steps(1) infinite;
+    }
+
+    @keyframes labelBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hack-warning {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--red);
+      text-shadow: 0 0 12px rgba(255,0,64,0.5);
+      margin-bottom: 1.2rem;
+    }
+
+    .hack-title {
+      font-family: var(--mono);
+      font-size: clamp(1.1rem, 4vw, 1.6rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+      line-height: 1.2;
+    }
+
+    .hack-title .brace { color: var(--red); }
+
+    .hack-sub {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--gray);
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Terminal log lines inside panel */
+    .hack-log {
+      text-align: left;
+      margin-bottom: 1.6rem;
+      font-size: 0.68rem;
+      font-family: var(--mono);
+      color: var(--gray);
+      line-height: 1.9;
+      min-height: 5.5rem;
+    }
+
+    .hack-log .log-line { opacity: 0; transition: opacity 0.2s; }
+    .hack-log .log-line.show { opacity: 1; }
+    .hack-log .log-err  { color: var(--red); }
+    .hack-log .log-ok   { color: var(--green); }
+    .hack-log .log-warn { color: #ffaa00; }
+
+    /* Big countdown number */
+    .hack-count-wrap {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .hack-count {
       font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--gray);
-      letter-spacing: 0.08em;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      white-space: nowrap;
-    }
-
-    .redirect-bar.visible { opacity: 1; }
-
-    .redirect-bar .count {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--green);
-      text-shadow: 0 0 10px var(--green-glow);
-      min-width: 1.2rem;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--red);
+      text-shadow: 0 0 20px rgba(255,0,64,0.6), 0 0 60px rgba(255,0,64,0.2);
+      line-height: 1;
+      min-width: 2ch;
       text-align: center;
+      animation: countPulse 1s ease-in-out infinite;
     }
 
-    .redirect-bar .bar-track {
-      width: 120px;
-      height: 2px;
-      background: rgba(0, 255, 65, 0.12);
+    @keyframes countPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.95); }
+    }
+
+    .hack-count-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--gray);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    /* Progress bar */
+    .hack-progress {
+      width: 100%;
+      height: 3px;
+      background: rgba(255,0,64,0.12);
       border-radius: 2px;
       overflow: hidden;
+      margin-bottom: 1rem;
     }
 
-    .redirect-bar .bar-fill {
+    .hack-progress-fill {
       height: 100%;
-      background: var(--green);
+      background: linear-gradient(90deg, var(--red), #ff6b6b);
       width: 100%;
-      box-shadow: 0 0 6px var(--green-glow);
       transform-origin: left;
+      box-shadow: 0 0 8px rgba(255,0,64,0.5);
       transition: transform linear;
+    }
+
+    .hack-dest {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: rgba(255,0,64,0.5);
+      letter-spacing: 0.08em;
+      word-break: break-all;
+    }
+
+    /* Glitch intensifier on body */
+    body.being-hacked::after {
+      animation: hackedFlicker 0.05s infinite !important;
+      background: rgba(255,0,64,0.03) !important;
+    }
+
+    @keyframes hackedFlicker {
+      0%  { opacity: 0.95; }
+      33% { opacity: 0.7; }
+      66% { opacity: 1; }
+      100%{ opacity: 0.8; }
     }
 
     /* Responsive */
@@ -578,12 +744,26 @@
     </noscript>
   </main>
 
-  <!-- Redirect countdown bar -->
-  <div class="redirect-bar" id="redirect-bar">
-    <span>Chuyển hướng sau</span>
-    <span class="count" id="countdown-num">5</span>
-    <span>giây</span>
-    <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+  <!-- Hack takeover panel -->
+  <div class="hack-panel" id="hack-panel">
+    <div class="hack-box" id="hack-box">
+      <p class="hack-warning">&#9608;&#9608; System Override &#9608;&#9608;</p>
+      <h2 class="hack-title"><span class="brace">[</span> ACCESS GRANTED <span class="brace">]</span></h2>
+      <p class="hack-sub">Đang chiếm quyền điều khiển và chuyển hướng...</p>
+
+      <div class="hack-log" id="hack-log"></div>
+
+      <div class="hack-count-wrap">
+        <div class="hack-count" id="hack-count">5</div>
+        <div class="hack-count-label">giây<br>còn lại</div>
+      </div>
+
+      <div class="hack-progress">
+        <div class="hack-progress-fill" id="hack-fill"></div>
+      </div>
+
+      <p class="hack-dest" id="hack-dest">&gt; redirecting to: ████████████████</p>
+    </div>
   </div>
 
   <footer class="footer">
@@ -764,20 +944,54 @@
         }
       }, 200);
 
-      // ── Countdown & redirect ─────────────────────────
+      // ── Hack takeover & redirect ─────────────────────
       var REDIRECT_URL = 'https://www.facebook.com/groups/aiartworksvn';
       var COUNTDOWN_SECS = 5;
-      var EFFECTS_DONE_AT = 5500; // ms — after all animations finish
+      var EFFECTS_DONE_AT = 5500;
+
+      var hackLogLines = [
+        { text: '> scanning target: nghien.ai...', cls: '', delay: 0 },
+        { text: '> firewall bypassed successfully', cls: 'log-ok', delay: 400 },
+        { text: '> injecting redirect payload...', cls: 'log-warn', delay: 800 },
+        { text: '> OVERRIDE ACCEPTED — taking control', cls: 'log-err', delay: 1200 },
+        { text: '> destination locked: facebook.com/groups/aiartworksvn', cls: 'log-ok', delay: 1700 },
+      ];
 
       setTimeout(function() {
-        var bar = document.getElementById('redirect-bar');
-        var numEl = document.getElementById('countdown-num');
-        var fillEl = document.getElementById('bar-fill');
+        var panel = document.getElementById('hack-panel');
+        var box = document.getElementById('hack-box');
+        var countEl = document.getElementById('hack-count');
+        var fillEl = document.getElementById('hack-fill');
+        var logEl = document.getElementById('hack-log');
+        var destEl = document.getElementById('hack-dest');
+
+        // Body glitch mode
+        document.body.classList.add('being-hacked');
+
+        // Show panel
+        panel.classList.add('visible');
+        setTimeout(function() { panel.classList.add('active'); }, 200);
+
+        // Render log lines
+        hackLogLines.forEach(function(line) {
+          var div = document.createElement('div');
+          div.className = 'log-line ' + (line.cls || '');
+          div.textContent = line.text;
+          logEl.appendChild(div);
+          setTimeout(function() { div.classList.add('show'); }, line.delay + 200);
+        });
+
+        // Reveal destination after a delay
+        setTimeout(function() {
+          destEl.textContent = '> redirecting to: ' + REDIRECT_URL;
+          destEl.style.color = 'rgba(255,0,64,0.85)';
+        }, 2200);
+
+        // Start shake
+        setTimeout(function() { panel.classList.add('shaking'); }, 3000);
+
+        // Progress bar drain
         var remaining = COUNTDOWN_SECS;
-
-        bar.classList.add('visible');
-
-        // Start progress bar shrink
         fillEl.style.transition = 'transform ' + COUNTDOWN_SECS + 's linear';
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
@@ -788,10 +1002,14 @@
         // Tick every second
         var ticker = setInterval(function() {
           remaining--;
-          numEl.textContent = remaining;
+          countEl.textContent = remaining;
           if (remaining <= 0) {
             clearInterval(ticker);
-            window.location.href = REDIRECT_URL;
+            // Full-screen flash then redirect
+            document.body.style.background = '#ff0040';
+            setTimeout(function() {
+              window.location.href = REDIRECT_URL;
+            }, 150);
           }
         }, 1000);
       }, EFFECTS_DONE_AT);
